@@ -222,6 +222,18 @@ export class Pipefy implements INodeType {
 				},
 				options: [
 					{
+						name: 'Create',
+						value: 'create',
+						description: 'Create a new pipe',
+						action: 'Create a pipe',
+					},
+					{
+						name: 'Delete',
+						value: 'delete',
+						description: 'Delete a pipe',
+						action: 'Delete a pipe',
+					},
+					{
 						name: 'Get',
 						value: 'get',
 						description: 'Get a pipe by ID',
@@ -233,8 +245,14 @@ export class Pipefy implements INodeType {
 						description: 'List all pipes',
 						action: 'List pipes',
 					},
+					{
+						name: 'Update',
+						value: 'update',
+						description: 'Update a pipe',
+						action: 'Update a pipe',
+					},
 				],
-				default: 'get',
+				default: 'list',
 			},
 			// Phase Operations
 			{
@@ -249,6 +267,18 @@ export class Pipefy implements INodeType {
 				},
 				options: [
 					{
+						name: 'Create',
+						value: 'create',
+						description: 'Create a new phase',
+						action: 'Create a phase',
+					},
+					{
+						name: 'Delete',
+						value: 'delete',
+						description: 'Delete a phase',
+						action: 'Delete a phase',
+					},
+					{
 						name: 'Get',
 						value: 'get',
 						description: 'Get a phase by ID',
@@ -260,8 +290,14 @@ export class Pipefy implements INodeType {
 						description: 'List all phases in a pipe',
 						action: 'List phases',
 					},
+					{
+						name: 'Update',
+						value: 'update',
+						description: 'Update a phase',
+						action: 'Update a phase',
+					},
 				],
-				default: 'get',
+				default: 'list',
 			},
 			// Webhook Operations
 			{
@@ -349,20 +385,90 @@ export class Pipefy implements INodeType {
 			},
 			// Pipe Fields
 			{
+				displayName: 'Name',
+				name: 'name',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['pipe'],
+						operation: ['create', 'update'],
+					},
+				},
+				default: '',
+				description: 'The name of the pipe',
+			},
+			{
+				displayName: 'Organization ID',
+				name: 'organizationId',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['pipe'],
+						operation: ['create'],
+					},
+				},
+				default: '',
+				description: 'The ID of the organization where the pipe will be created',
+			},
+			{
+				displayName: 'Description',
+				name: 'description',
+				type: 'string',
+				required: false,
+				displayOptions: {
+					show: {
+						resource: ['pipe'],
+						operation: ['create', 'update'],
+					},
+				},
+				default: '',
+				description: 'The description of the pipe',
+			},
+			// Phase Fields
+			{
+				displayName: 'Name',
+				name: 'name',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['phase'],
+						operation: ['create', 'update'],
+					},
+				},
+				default: '',
+				description: 'The name of the phase',
+			},
+			{
+				displayName: 'Description',
+				name: 'description',
+				type: 'string',
+				required: false,
+				displayOptions: {
+					show: {
+						resource: ['phase'],
+						operation: ['create', 'update'],
+					},
+				},
+				default: '',
+				description: 'The description of the phase',
+			},
+			{
 				displayName: 'Pipe ID',
 				name: 'pipeId',
 				type: 'string',
 				required: true,
 				displayOptions: {
 					show: {
-						resource: ['pipe'],
-						operation: ['get'],
+						resource: ['phase'],
+						operation: ['create', 'list'],
 					},
 				},
 				default: '',
 				description: 'The ID of the pipe',
 			},
-			// Phase Fields
 			{
 				displayName: 'Phase ID',
 				name: 'phaseId',
@@ -371,25 +477,11 @@ export class Pipefy implements INodeType {
 				displayOptions: {
 					show: {
 						resource: ['phase'],
-						operation: ['get'],
+						operation: ['get', 'update', 'delete'],
 					},
 				},
 				default: '',
 				description: 'The ID of the phase',
-			},
-			{
-				displayName: 'Pipe ID',
-				name: 'pipeId',
-				type: 'string',
-				required: true,
-				displayOptions: {
-					show: {
-						resource: ['phase'],
-						operation: ['list'],
-					},
-				},
-				default: '',
-				description: 'The ID of the pipe to list phases from',
 			},
 			// Webhook Fields
 			{
@@ -993,9 +1085,32 @@ export class Pipefy implements INodeType {
 								pipe(id: ${pipeId}) {
 									id
 									name
+									description
 									phases {
 										id
 										name
+										cards_count
+										done
+										description
+									}
+									members {
+										user {
+											id
+											name
+											email
+										}
+										role_name
+									}
+									labels {
+										id
+										name
+										color
+									}
+									start_form_fields {
+										id
+										label
+										type
+										required
 									}
 									created_at
 									updated_at
@@ -1018,9 +1133,12 @@ export class Pipefy implements INodeType {
 										node {
 											id
 											name
+											description
 											phases {
 												id
 												name
+												cards_count
+												done
 											}
 											created_at
 											updated_at
@@ -1037,6 +1155,81 @@ export class Pipefy implements INodeType {
 
 						returnData.push({ json: response.data.pipes.edges.map((edge: any) => edge.node) });
 					}
+					else if (operation === 'create') {
+						const name = this.getNodeParameter('name', i) as string;
+						const organizationId = this.getNodeParameter('organizationId', i) as string;
+
+						const query = `
+							mutation {
+								createPipe(input: {
+									name: "${name}",
+									organization_id: ${organizationId}
+								}) {
+									pipe {
+										id
+										name
+										created_at
+									}
+								}
+							}
+						`;
+
+						const response = await this.helpers.request({
+							method: 'POST',
+							body: { query },
+						});
+
+						returnData.push({ json: response.data.createPipe.pipe });
+					}
+					else if (operation === 'update') {
+						const pipeId = this.getNodeParameter('pipeId', i) as string;
+						const name = this.getNodeParameter('name', i) as string;
+						const description = this.getNodeParameter('description', i) as string;
+
+						const query = `
+							mutation {
+								updatePipe(input: {
+									id: ${pipeId},
+									name: "${name}",
+									description: "${description}"
+								}) {
+									pipe {
+										id
+										name
+										description
+										updated_at
+									}
+								}
+							}
+						`;
+
+						const response = await this.helpers.request({
+							method: 'POST',
+							body: { query },
+						});
+
+						returnData.push({ json: response.data.updatePipe.pipe });
+					}
+					else if (operation === 'delete') {
+						const pipeId = this.getNodeParameter('pipeId', i) as string;
+
+						const query = `
+							mutation {
+								deletePipe(input: {
+									id: ${pipeId}
+								}) {
+									success
+								}
+							}
+						`;
+
+						const response = await this.helpers.request({
+							method: 'POST',
+							body: { query },
+						});
+
+						returnData.push({ json: response.data.deletePipe });
+					}
 				}
 				else if (resource === 'phase') {
 					if (operation === 'get') {
@@ -1047,9 +1240,24 @@ export class Pipefy implements INodeType {
 								phase(id: ${phaseId}) {
 									id
 									name
+									description
 									cards_count
 									done
-									description
+									fields {
+										id
+										label
+										type
+										required
+									}
+									cards(first: 100) {
+										edges {
+											node {
+												id
+												title
+												created_at
+											}
+										}
+									}
 									created_at
 									updated_at
 								}
@@ -1072,9 +1280,14 @@ export class Pipefy implements INodeType {
 									phases {
 										id
 										name
+										description
 										cards_count
 										done
-										description
+										fields {
+											id
+											label
+											type
+										}
 										created_at
 										updated_at
 									}
@@ -1088,6 +1301,84 @@ export class Pipefy implements INodeType {
 						});
 
 						returnData.push({ json: response.data.pipe.phases });
+					}
+					else if (operation === 'create') {
+						const pipeId = this.getNodeParameter('pipeId', i) as string;
+						const name = this.getNodeParameter('name', i) as string;
+						const description = this.getNodeParameter('description', i) as string;
+
+						const query = `
+							mutation {
+								createPhase(input: {
+									pipe_id: ${pipeId},
+									name: "${name}",
+									description: "${description}"
+								}) {
+									phase {
+										id
+										name
+										description
+										created_at
+									}
+								}
+							}
+						`;
+
+						const response = await this.helpers.request({
+							method: 'POST',
+							body: { query },
+						});
+
+						returnData.push({ json: response.data.createPhase.phase });
+					}
+					else if (operation === 'update') {
+						const phaseId = this.getNodeParameter('phaseId', i) as string;
+						const name = this.getNodeParameter('name', i) as string;
+						const description = this.getNodeParameter('description', i) as string;
+
+						const query = `
+							mutation {
+								updatePhase(input: {
+									id: ${phaseId},
+									name: "${name}",
+									description: "${description}"
+								}) {
+									phase {
+										id
+										name
+										description
+										updated_at
+									}
+								}
+							}
+						`;
+
+						const response = await this.helpers.request({
+							method: 'POST',
+							body: { query },
+						});
+
+						returnData.push({ json: response.data.updatePhase.phase });
+					}
+					else if (operation === 'delete') {
+						const phaseId = this.getNodeParameter('phaseId', i) as string;
+
+						const query = `
+							mutation {
+								deletePhase(input: {
+									id: ${phaseId}
+								}) {
+									success
+								}
+							}
+						`;
+
+						const response = await this.helpers.request({
+							method: 'POST',
+							body: { query },
+						});
+
+						returnData.push({ json: response.data.deletePhase });
 					}
 				}
 				else if (resource === 'webhook') {
