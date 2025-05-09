@@ -665,6 +665,217 @@ export class Pipefy implements INodeType {
 				default: '',
 				description: 'The ID of the phase',
 			},
+			{
+				displayName: 'Can Receive Card',
+				name: 'canReceiveCard',
+				type: 'boolean',
+				displayOptions: {
+					show: {
+						resource: ['phase'],
+						operation: ['create', 'update'],
+					},
+				},
+				default: true,
+				description: 'Whether cards can be moved to this phase',
+			},
+			{
+				displayName: 'Can Create Card',
+				name: 'canCreateCard',
+				type: 'boolean',
+				displayOptions: {
+					show: {
+						resource: ['phase'],
+						operation: ['create', 'update'],
+					},
+				},
+				default: true,
+				description: 'Whether cards can be created in this phase',
+			},
+			{
+				displayName: 'Done',
+				name: 'done',
+				type: 'boolean',
+				displayOptions: {
+					show: {
+						resource: ['phase'],
+						operation: ['create', 'update'],
+					},
+				},
+				default: false,
+				description: 'Whether this is a done phase',
+			},
+			{
+				displayName: 'Fields',
+				name: 'fields',
+				type: 'fixedCollection',
+				typeOptions: {
+					multipleValues: true,
+				},
+				displayOptions: {
+					show: {
+						resource: ['phase'],
+						operation: ['create', 'update'],
+					},
+				},
+				default: {},
+				options: [
+					{
+						name: 'field',
+						displayName: 'Field',
+						values: [
+							{
+								displayName: 'Label',
+								name: 'label',
+								type: 'string',
+								default: '',
+								required: true,
+								description: 'The label of the field',
+							},
+							{
+								displayName: 'Type',
+								name: 'type',
+								type: 'options',
+								options: [
+									{
+										name: 'Assignee',
+										value: 'assignee',
+									},
+									{
+										name: 'Attachment',
+										value: 'attachment',
+									},
+									{
+										name: 'Checklist',
+										value: 'checklist',
+									},
+									{
+										name: 'Cnpj',
+										value: 'cnpj',
+									},
+									{
+										name: 'Connection',
+										value: 'connection',
+									},
+									{
+										name: 'Currency',
+										value: 'currency',
+									},
+									{
+										name: 'Date',
+										value: 'date',
+									},
+									{
+										name: 'DateTime',
+										value: 'datetime',
+									},
+									{
+										name: 'Due Date',
+										value: 'due_date',
+									},
+									{
+										name: 'Email',
+										value: 'email',
+									},
+									{
+										name: 'ID',
+										value: 'id',
+									},
+									{
+										name: 'Label',
+										value: 'label',
+									},
+									{
+										name: 'Long Text',
+										value: 'long_text',
+									},
+									{
+										name: 'Number',
+										value: 'number',
+									},
+									{
+										name: 'Phone',
+										value: 'phone',
+									},
+									{
+										name: 'Radio',
+										value: 'radio',
+									},
+									{
+										name: 'Select',
+										value: 'select',
+									},
+									{
+										name: 'Short Text',
+										value: 'short_text',
+									},
+									{
+										name: 'Statement',
+										value: 'statement',
+									},
+									{
+										name: 'Time',
+										value: 'time',
+									},
+								],
+								default: 'short_text',
+								description: 'The type of the field',
+							},
+							{
+								displayName: 'Required',
+								name: 'required',
+								type: 'boolean',
+								default: false,
+								description: 'Whether the field is required',
+							},
+							{
+								displayName: 'Help Text',
+								name: 'help',
+								type: 'string',
+								default: '',
+								description: 'Help text for the field',
+							},
+							{
+								displayName: 'Description',
+								name: 'description',
+								type: 'string',
+								default: '',
+								description: 'Description of the field',
+							},
+							{
+								displayName: 'Options',
+								name: 'options',
+								type: 'fixedCollection',
+								typeOptions: {
+									multipleValues: true,
+								},
+								displayOptions: {
+									show: {
+										type: ['select', 'radio'],
+									},
+								},
+								default: {},
+								options: [
+									{
+										name: 'option',
+										displayName: 'Option',
+										values: [
+											{
+												displayName: 'Name',
+												name: 'name',
+												type: 'string',
+												default: '',
+												description: 'The name of the option',
+											},
+										],
+									},
+								],
+								description: 'The options for select and radio fields',
+							},
+						],
+					},
+				],
+				description: 'The fields for the phase',
+			},
 			// Webhook Fields
 			{
 				displayName: 'Pipe ID',
@@ -1238,6 +1449,148 @@ export class Pipefy implements INodeType {
 					},
 				],
 				description: 'The fields to set on the record',
+			},
+			{
+				displayName: 'Start Form Fields',
+				name: 'startFormFields',
+				type: 'fixedCollection',
+				typeOptions: {
+					multipleValues: true,
+				},
+				displayOptions: {
+					show: {
+						resource: ['pipe'],
+						operation: ['create', 'update'],
+					},
+				},
+				default: {},
+				options: [
+					{
+						name: 'field',
+						displayName: 'Field',
+						values: [
+							{
+								displayName: 'Label',
+								name: 'label',
+								type: 'string',
+								default: '',
+								required: true,
+								description: 'The label of the field',
+							},
+							{
+								displayName: 'Type',
+								name: 'type',
+								type: 'options',
+								options: [
+									{
+										name: 'Assignee',
+										value: 'assignee',
+									},
+									{
+										name: 'Attachment',
+										value: 'attachment',
+									},
+									{
+										name: 'Checklist',
+										value: 'checklist',
+									},
+									{
+										name: 'Cnpj',
+										value: 'cnpj',
+									},
+									{
+										name: 'Connection',
+										value: 'connection',
+									},
+									{
+										name: 'Currency',
+										value: 'currency',
+									},
+									{
+										name: 'Date',
+										value: 'date',
+									},
+									{
+										name: 'DateTime',
+										value: 'datetime',
+									},
+									{
+										name: 'Due Date',
+										value: 'due_date',
+									},
+									{
+										name: 'Email',
+										value: 'email',
+									},
+									{
+										name: 'ID',
+										value: 'id',
+									},
+									{
+										name: 'Label',
+										value: 'label',
+									},
+									{
+										name: 'Long Text',
+										value: 'long_text',
+									},
+									{
+										name: 'Number',
+										value: 'number',
+									},
+									{
+										name: 'Phone',
+										value: 'phone',
+									},
+									{
+										name: 'Radio',
+										value: 'radio',
+									},
+									{
+										name: 'Select',
+										value: 'select',
+									},
+									{
+										name: 'Short Text',
+										value: 'short_text',
+									},
+									{
+										name: 'Statement',
+										value: 'statement',
+									},
+									{
+										name: 'Time',
+										value: 'time',
+									},
+								],
+								default: 'short_text',
+								description: 'The type of the field',
+							},
+							{
+								displayName: 'Required',
+								name: 'required',
+								type: 'boolean',
+								default: false,
+								description: 'Whether the field is required',
+							},
+							{
+								displayName: 'Help Text',
+								name: 'help',
+								type: 'string',
+								default: '',
+								description: 'Help text for the field',
+							},
+							{
+								displayName: 'Description',
+								name: 'description',
+								type: 'string',
+								default: '',
+								description: 'Description of the field',
+							},
+						],
+					},
+				],
+				description: 'The start form fields for the pipe',
 			},
 		],
 	};
