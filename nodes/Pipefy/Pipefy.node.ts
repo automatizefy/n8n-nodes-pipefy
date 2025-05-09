@@ -3,6 +3,8 @@ import {
 	INodeExecutionData,
 	INodeType,
 	INodeTypeDescription,
+	IWebhookFunctions,
+	IWebhookResponseData,
 } from 'n8n-workflow';
 
 export class Pipefy implements INodeType {
@@ -25,6 +27,14 @@ export class Pipefy implements INodeType {
 				required: true,
 			},
 		],
+		webhooks: [
+			{
+				name: 'default',
+				httpMethod: 'POST',
+				responseMode: 'onReceived',
+				path: 'webhook',
+			},
+		],
 		requestDefaults: {
 			baseURL: 'https://api.pipefy.com/graphql',
 			headers: {
@@ -44,6 +54,10 @@ export class Pipefy implements INodeType {
 						value: 'card',
 					},
 					{
+						name: 'Organization',
+						value: 'organization',
+					},
+					{
 						name: 'Pipe',
 						value: 'pipe',
 					},
@@ -51,9 +65,100 @@ export class Pipefy implements INodeType {
 						name: 'Phase',
 						value: 'phase',
 					},
+					{
+						name: 'Table',
+						value: 'table',
+					},
+					{
+						name: 'User',
+						value: 'user',
+					},
+					{
+						name: 'Webhook',
+						value: 'webhook',
+					},
 				],
 				default: 'card',
 			},
+			// Organization Operations
+			{
+				displayName: 'Operation',
+				name: 'operation',
+				type: 'options',
+				noDataExpression: true,
+				displayOptions: {
+					show: {
+						resource: ['organization'],
+					},
+				},
+				options: [
+					{
+						name: 'Create',
+						value: 'create',
+						description: 'Create a new organization',
+						action: 'Create an organization',
+					},
+					{
+						name: 'Get',
+						value: 'get',
+						description: 'Get organization details',
+						action: 'Get an organization',
+					},
+					{
+						name: 'Update',
+						value: 'update',
+						description: 'Update an organization',
+						action: 'Update an organization',
+					},
+					{
+						name: 'Delete',
+						value: 'delete',
+						description: 'Delete an organization',
+						action: 'Delete an organization',
+					},
+				],
+				default: 'get',
+			},
+			// User Operations
+			{
+				displayName: 'Operation',
+				name: 'operation',
+				type: 'options',
+				noDataExpression: true,
+				displayOptions: {
+					show: {
+						resource: ['user'],
+					},
+				},
+				options: [
+					{
+						name: 'Get Me',
+						value: 'getMe',
+						description: 'Get current user information',
+						action: 'Get current user information',
+					},
+					{
+						name: 'Invite',
+						value: 'invite',
+						description: 'Invite users to organization',
+						action: 'Invite users to organization',
+					},
+					{
+						name: 'Remove',
+						value: 'remove',
+						description: 'Remove user from organization',
+						action: 'Remove user from organization',
+					},
+					{
+						name: 'Set Role',
+						value: 'setRole',
+						description: 'Set user role in organization',
+						action: 'Set user role in organization',
+					},
+				],
+				default: 'getMe',
+			},
+			// Card Operations
 			{
 				displayName: 'Operation',
 				name: 'operation',
@@ -83,9 +188,109 @@ export class Pipefy implements INodeType {
 						description: 'Update a card',
 						action: 'Update a card',
 					},
+					{
+						name: 'Move',
+						value: 'move',
+						description: 'Move card to another phase',
+						action: 'Move a card',
+					},
+					{
+						name: 'Add Comment',
+						value: 'addComment',
+						description: 'Add a comment to a card',
+						action: 'Add a comment to a card',
+					},
+					{
+						name: 'Upload Attachment',
+						value: 'uploadAttachment',
+						description: 'Upload an attachment to a card',
+						action: 'Upload an attachment to a card',
+					},
 				],
 				default: 'create',
 			},
+			// Pipe Operations
+			{
+				displayName: 'Operation',
+				name: 'operation',
+				type: 'options',
+				noDataExpression: true,
+				displayOptions: {
+					show: {
+						resource: ['pipe'],
+					},
+				},
+				options: [
+					{
+						name: 'Get',
+						value: 'get',
+						description: 'Get a pipe by ID',
+						action: 'Get a pipe',
+					},
+					{
+						name: 'List',
+						value: 'list',
+						description: 'List all pipes',
+						action: 'List pipes',
+					},
+				],
+				default: 'get',
+			},
+			// Phase Operations
+			{
+				displayName: 'Operation',
+				name: 'operation',
+				type: 'options',
+				noDataExpression: true,
+				displayOptions: {
+					show: {
+						resource: ['phase'],
+					},
+				},
+				options: [
+					{
+						name: 'Get',
+						value: 'get',
+						description: 'Get a phase by ID',
+						action: 'Get a phase',
+					},
+					{
+						name: 'List',
+						value: 'list',
+						description: 'List all phases in a pipe',
+						action: 'List phases',
+					},
+				],
+				default: 'get',
+			},
+			// Webhook Operations
+			{
+				displayName: 'Operation',
+				name: 'operation',
+				type: 'options',
+				noDataExpression: true,
+				displayOptions: {
+					show: {
+						resource: ['webhook'],
+					},
+				},
+				options: [
+					{
+						name: 'Create',
+						value: 'create',
+						description: 'Create a webhook',
+						action: 'Create a webhook',
+					},
+					{
+						name: 'Delete',
+						value: 'delete',
+						description: 'Delete a webhook',
+						action: 'Delete a webhook',
+					},
+				],
+				default: 'create',
+			},
+			// Card Fields
 			{
 				displayName: 'Card ID',
 				name: 'cardId',
@@ -142,6 +347,260 @@ export class Pipefy implements INodeType {
 				default: '',
 				description: 'The title of the card',
 			},
+			// Pipe Fields
+			{
+				displayName: 'Pipe ID',
+				name: 'pipeId',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['pipe'],
+						operation: ['get'],
+					},
+				},
+				default: '',
+				description: 'The ID of the pipe',
+			},
+			// Phase Fields
+			{
+				displayName: 'Phase ID',
+				name: 'phaseId',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['phase'],
+						operation: ['get'],
+					},
+				},
+				default: '',
+				description: 'The ID of the phase',
+			},
+			{
+				displayName: 'Pipe ID',
+				name: 'pipeId',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['phase'],
+						operation: ['list'],
+					},
+				},
+				default: '',
+				description: 'The ID of the pipe to list phases from',
+			},
+			// Webhook Fields
+			{
+				displayName: 'Pipe ID',
+				name: 'pipeId',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['webhook'],
+						operation: ['create'],
+					},
+				},
+				default: '',
+				description: 'The ID of the pipe to create webhook for',
+			},
+			{
+				displayName: 'Webhook URL',
+				name: 'webhookUrl',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['webhook'],
+						operation: ['create'],
+					},
+				},
+				default: '',
+				description: 'The URL to send webhook events to',
+			},
+			{
+				displayName: 'Webhook ID',
+				name: 'webhookId',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['webhook'],
+						operation: ['delete'],
+					},
+				},
+				default: '',
+				description: 'The ID of the webhook to delete',
+			},
+			// Organization Fields
+			{
+				displayName: 'Organization ID',
+				name: 'organizationId',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['organization'],
+						operation: ['get', 'update', 'delete'],
+					},
+				},
+				default: '',
+				description: 'The ID of the organization',
+			},
+			{
+				displayName: 'Organization Name',
+				name: 'organizationName',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['organization'],
+						operation: ['create', 'update'],
+					},
+				},
+				default: '',
+				description: 'The name of the organization',
+			},
+			{
+				displayName: 'Industry',
+				name: 'industry',
+				type: 'options',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['organization'],
+						operation: ['create'],
+					},
+				},
+				options: [
+					{ name: 'Construction', value: 'construction' },
+					{ name: 'Consulting', value: 'consulting' },
+					{ name: 'Education', value: 'education' },
+					{ name: 'Energy', value: 'energy' },
+					{ name: 'Financial Services', value: 'financial_services' },
+					{ name: 'Health', value: 'health' },
+					{ name: 'Legal Services', value: 'legal_services' },
+					{ name: 'Manufacturing', value: 'manufacturing' },
+					{ name: 'Marketing', value: 'marketing' },
+					{ name: 'Non-Profit Organization', value: 'non_profit_organization' },
+					{ name: 'Public Sector', value: 'public_sector' },
+					{ name: 'Retail', value: 'retail' },
+					{ name: 'Tourism', value: 'tourism' },
+					{ name: 'Technology', value: 'technology' },
+					{ name: 'Telecommunications', value: 'telecommunications' },
+					{ name: 'Transportation', value: 'transportation' },
+					{ name: 'Others', value: 'others' },
+				],
+				default: 'others',
+				description: 'The industry of the organization',
+			},
+			// User Fields
+			{
+				displayName: 'Organization ID',
+				name: 'organizationId',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['user'],
+						operation: ['invite', 'remove', 'setRole'],
+					},
+				},
+				default: '',
+				description: 'The ID of the organization',
+			},
+			{
+				displayName: 'Email',
+				name: 'email',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['user'],
+						operation: ['invite', 'remove'],
+					},
+				},
+				default: '',
+				description: 'The email of the user',
+			},
+			{
+				displayName: 'Role',
+				name: 'role',
+				type: 'options',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['user'],
+						operation: ['invite', 'setRole'],
+					},
+				},
+				options: [
+					{ name: 'Admin', value: 'admin' },
+					{ name: 'Member', value: 'member' },
+					{ name: 'Guest', value: 'guest' },
+				],
+				default: 'member',
+				description: 'The role to assign to the user',
+			},
+			{
+				displayName: 'User ID',
+				name: 'userId',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['user'],
+						operation: ['setRole'],
+					},
+				},
+				default: '',
+				description: 'The ID of the user',
+			},
+			// Additional Card Fields
+			{
+				displayName: 'Target Phase ID',
+				name: 'targetPhaseId',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['card'],
+						operation: ['move'],
+					},
+				},
+				default: '',
+				description: 'The ID of the phase to move the card to',
+			},
+			{
+				displayName: 'Comment',
+				name: 'comment',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['card'],
+						operation: ['addComment'],
+					},
+				},
+				default: '',
+				description: 'The comment text to add to the card',
+			},
+			{
+				displayName: 'File',
+				name: 'file',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['card'],
+						operation: ['uploadAttachment'],
+					},
+				},
+				default: '',
+				description: 'The file to upload as an attachment',
+			},
 		],
 	};
 
@@ -153,7 +612,208 @@ export class Pipefy implements INodeType {
 
 		for (let i = 0; i < items.length; i++) {
 			try {
-				if (resource === 'card') {
+				if (resource === 'organization') {
+					if (operation === 'create') {
+						const name = this.getNodeParameter('organizationName', i) as string;
+						const industry = this.getNodeParameter('industry', i) as string;
+
+						const query = `
+							mutation {
+								createOrganization(input: {
+									name: "${name}",
+									industry: "${industry}"
+								}) {
+									organization {
+										id
+										name
+										created_at
+									}
+								}
+							}
+						`;
+
+						const response = await this.helpers.request({
+							method: 'POST',
+							body: { query },
+						});
+
+						returnData.push({ json: response.data.createOrganization.organization });
+					}
+					else if (operation === 'get') {
+						const organizationId = this.getNodeParameter('organizationId', i) as string;
+
+						const query = `
+							query {
+								organization(id: ${organizationId}) {
+									id
+									name
+									industry
+									members {
+										user {
+											id
+											name
+											email
+										}
+										role_name
+									}
+									created_at
+									updated_at
+								}
+							}
+						`;
+
+						const response = await this.helpers.request({
+							method: 'POST',
+							body: { query },
+						});
+
+						returnData.push({ json: response.data.organization });
+					}
+					else if (operation === 'update') {
+						const organizationId = this.getNodeParameter('organizationId', i) as string;
+						const name = this.getNodeParameter('organizationName', i) as string;
+
+						const query = `
+							mutation {
+								updateOrganization(input: {
+									id: ${organizationId},
+									name: "${name}"
+								}) {
+									organization {
+										id
+										name
+										updated_at
+									}
+								}
+							}
+						`;
+
+						const response = await this.helpers.request({
+							method: 'POST',
+							body: { query },
+						});
+
+						returnData.push({ json: response.data.updateOrganization.organization });
+					}
+					else if (operation === 'delete') {
+						const organizationId = this.getNodeParameter('organizationId', i) as string;
+
+						const query = `
+							mutation {
+								deleteOrganization(input: {
+									id: ${organizationId}
+								}) {
+									success
+								}
+							}
+						`;
+
+						const response = await this.helpers.request({
+							method: 'POST',
+							body: { query },
+						});
+
+						returnData.push({ json: response.data.deleteOrganization });
+					}
+				}
+				else if (resource === 'user') {
+					if (operation === 'getMe') {
+						const query = `
+							query {
+								me {
+									id
+									name
+									email
+									username
+									created_at
+									updated_at
+								}
+							}
+						`;
+
+						const response = await this.helpers.request({
+							method: 'POST',
+							body: { query },
+						});
+
+						returnData.push({ json: response.data.me });
+					}
+					else if (operation === 'invite') {
+						const organizationId = this.getNodeParameter('organizationId', i) as string;
+						const email = this.getNodeParameter('email', i) as string;
+						const role = this.getNodeParameter('role', i) as string;
+
+						const query = `
+							mutation {
+								inviteMembers(input: {
+									organization_id: ${organizationId},
+									emails: [{
+										email: "${email}",
+										role_name: "${role}"
+									}]
+								}) {
+									success
+								}
+							}
+						`;
+
+						const response = await this.helpers.request({
+							method: 'POST',
+							body: { query },
+						});
+
+						returnData.push({ json: response.data.inviteMembers });
+					}
+					else if (operation === 'remove') {
+						const organizationId = this.getNodeParameter('organizationId', i) as string;
+						const email = this.getNodeParameter('email', i) as string;
+
+						const query = `
+							mutation {
+								removeUserFromOrg(input: {
+									organization_id: ${organizationId},
+									email: "${email}"
+								}) {
+									success
+								}
+							}
+						`;
+
+						const response = await this.helpers.request({
+							method: 'POST',
+							body: { query },
+						});
+
+						returnData.push({ json: response.data.removeUserFromOrg });
+					}
+					else if (operation === 'setRole') {
+						const organizationId = this.getNodeParameter('organizationId', i) as string;
+						const userId = this.getNodeParameter('userId', i) as string;
+						const role = this.getNodeParameter('role', i) as string;
+
+						const query = `
+							mutation {
+								setRole(input: {
+									member: {
+										user_id: "${userId}",
+										role_name: "${role}"
+									},
+									organization_id: ${organizationId}
+								}) {
+									success
+								}
+							}
+						`;
+
+						const response = await this.helpers.request({
+							method: 'POST',
+							body: { query },
+						});
+
+						returnData.push({ json: response.data.setRole });
+					}
+				}
+				else if (resource === 'card') {
 					if (operation === 'create') {
 						const pipeId = this.getNodeParameter('pipeId', i) as string;
 						const phaseId = this.getNodeParameter('phaseId', i) as string;
@@ -169,6 +829,11 @@ export class Pipefy implements INodeType {
 									card {
 										id
 										title
+										current_phase {
+											name
+										}
+										created_at
+										updated_at
 									}
 								}
 							}
@@ -189,6 +854,9 @@ export class Pipefy implements INodeType {
 								card(id: ${cardId}) {
 									id
 									title
+									current_phase {
+										name
+									}
 									created_at
 									updated_at
 								}
@@ -202,6 +870,274 @@ export class Pipefy implements INodeType {
 
 						returnData.push({ json: response.data.card });
 					}
+					else if (operation === 'update') {
+						const cardId = this.getNodeParameter('cardId', i) as string;
+						const title = this.getNodeParameter('title', i) as string;
+
+						const query = `
+							mutation {
+								updateCard(input: {
+									id: ${cardId},
+									title: "${title}"
+								}) {
+									card {
+										id
+										title
+										current_phase {
+											name
+										}
+										updated_at
+									}
+								}
+							}
+						`;
+
+						const response = await this.helpers.request({
+							method: 'POST',
+							body: { query },
+						});
+
+						returnData.push({ json: response.data.updateCard.card });
+					}
+					else if (operation === 'move') {
+						const cardId = this.getNodeParameter('cardId', i) as string;
+						const targetPhaseId = this.getNodeParameter('targetPhaseId', i) as string;
+
+						const query = `
+							mutation {
+								moveCardToPhase(input: {
+									card_id: ${cardId},
+									destination_phase_id: ${targetPhaseId}
+								}) {
+									card {
+										id
+										title
+										current_phase {
+											name
+										}
+										updated_at
+									}
+								}
+							}
+						`;
+
+						const response = await this.helpers.request({
+							method: 'POST',
+							body: { query },
+						});
+
+						returnData.push({ json: response.data.moveCardToPhase.card });
+					}
+					else if (operation === 'addComment') {
+						const cardId = this.getNodeParameter('cardId', i) as string;
+						const comment = this.getNodeParameter('comment', i) as string;
+
+						const query = `
+							mutation {
+								createComment(input: {
+									card_id: ${cardId},
+									text: "${comment}"
+								}) {
+									comment {
+										id
+										text
+										created_at
+									}
+								}
+							}
+						`;
+
+						const response = await this.helpers.request({
+							method: 'POST',
+							body: { query },
+						});
+
+						returnData.push({ json: response.data.createComment.comment });
+					}
+					else if (operation === 'uploadAttachment') {
+						const cardId = this.getNodeParameter('cardId', i) as string;
+						const file = this.getNodeParameter('file', i) as string;
+
+						// Implementation for file upload will require multipart form data
+						// This is a placeholder for the actual implementation
+						const query = `
+							mutation {
+								createAttachment(input: {
+									card_id: ${cardId},
+									file: "${file}"
+								}) {
+									attachment {
+										id
+										filename
+										url
+										created_at
+									}
+								}
+							}
+						`;
+
+						const response = await this.helpers.request({
+							method: 'POST',
+							body: { query },
+						});
+
+						returnData.push({ json: response.data.createAttachment.attachment });
+					}
+				}
+				else if (resource === 'pipe') {
+					if (operation === 'get') {
+						const pipeId = this.getNodeParameter('pipeId', i) as string;
+
+						const query = `
+							query {
+								pipe(id: ${pipeId}) {
+									id
+									name
+									phases {
+										id
+										name
+									}
+									created_at
+									updated_at
+								}
+							}
+						`;
+
+						const response = await this.helpers.request({
+							method: 'POST',
+							body: { query },
+						});
+
+						returnData.push({ json: response.data.pipe });
+					}
+					else if (operation === 'list') {
+						const query = `
+							query {
+								pipes {
+									edges {
+										node {
+											id
+											name
+											phases {
+												id
+												name
+											}
+											created_at
+											updated_at
+										}
+									}
+								}
+							}
+						`;
+
+						const response = await this.helpers.request({
+							method: 'POST',
+							body: { query },
+						});
+
+						returnData.push({ json: response.data.pipes.edges.map((edge: any) => edge.node) });
+					}
+				}
+				else if (resource === 'phase') {
+					if (operation === 'get') {
+						const phaseId = this.getNodeParameter('phaseId', i) as string;
+
+						const query = `
+							query {
+								phase(id: ${phaseId}) {
+									id
+									name
+									cards_count
+									done
+									description
+									created_at
+									updated_at
+								}
+							}
+						`;
+
+						const response = await this.helpers.request({
+							method: 'POST',
+							body: { query },
+						});
+
+						returnData.push({ json: response.data.phase });
+					}
+					else if (operation === 'list') {
+						const pipeId = this.getNodeParameter('pipeId', i) as string;
+
+						const query = `
+							query {
+								pipe(id: ${pipeId}) {
+									phases {
+										id
+										name
+										cards_count
+										done
+										description
+										created_at
+										updated_at
+									}
+								}
+							}
+						`;
+
+						const response = await this.helpers.request({
+							method: 'POST',
+							body: { query },
+						});
+
+						returnData.push({ json: response.data.pipe.phases });
+					}
+				}
+				else if (resource === 'webhook') {
+					if (operation === 'create') {
+						const pipeId = this.getNodeParameter('pipeId', i) as string;
+						const webhookUrl = this.getNodeParameter('webhookUrl', i) as string;
+
+						const query = `
+							mutation {
+								createWebhook(input: {
+									pipe_id: ${pipeId},
+									url: "${webhookUrl}",
+									actions: ["card.create", "card.move", "card.done"]
+								}) {
+									webhook {
+										id
+										url
+										actions
+									}
+								}
+							}
+						`;
+
+						const response = await this.helpers.request({
+							method: 'POST',
+							body: { query },
+						});
+
+						returnData.push({ json: response.data.createWebhook.webhook });
+					}
+					else if (operation === 'delete') {
+						const webhookId = this.getNodeParameter('webhookId', i) as string;
+
+						const query = `
+							mutation {
+								deleteWebhook(input: {
+									id: ${webhookId}
+								}) {
+									success
+								}
+							}
+						`;
+
+						const response = await this.helpers.request({
+							method: 'POST',
+							body: { query },
+						});
+
+						returnData.push({ json: response.data.deleteWebhook });
+					}
 				}
 			} catch (error) {
 				if (this.continueOnFail()) {
@@ -214,5 +1150,27 @@ export class Pipefy implements INodeType {
 		}
 
 		return [returnData];
+	}
+
+	async webhook(this: IWebhookFunctions): Promise<IWebhookResponseData> {
+		const req = this.getRequestObject();
+		const res = this.getResponseObject();
+		const webhookData = this.getWorkflowStaticData('node');
+
+		// Verify webhook signature if needed
+		// const signature = req.headers['x-pipefy-signature'];
+		// if (!this.verifyWebhook(signature)) {
+		// 	res.status(401).send('Unauthorized');
+		// 	return {};
+		// }
+
+		webhookData.lastHeaders = req.headers;
+		webhookData.lastBody = req.body;
+
+		return {
+			workflowData: [
+				this.helpers.returnJsonArray(req.body),
+			],
+		};
 	}
 } 
