@@ -12,7 +12,7 @@ export class Pipefy implements INodeType {
 		displayName: 'Pipefy',
 		name: 'pipefy',
 		icon: 'file:pipefy.svg',
-		group: ['transform'],
+		group: ['transform', 'action'],
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
 		description: 'Interact with Pipefy API',
