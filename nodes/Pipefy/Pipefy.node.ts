@@ -581,6 +581,20 @@ export class Pipefy implements INodeType {
 				description: 'The name of the pipe',
 			},
 			{
+				displayName: 'Pipe ID',
+				name: 'pipeId',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['pipe'],
+						operation: ['get', 'update', 'delete'],
+					},
+				},
+				default: '',
+				description: 'The ID of the pipe',
+			},
+			{
 				displayName: 'Organization ID',
 				name: 'organizationId',
 				type: 'string',
