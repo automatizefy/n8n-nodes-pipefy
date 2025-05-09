@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-pipefy",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "n8n community node for Pipefy API integration",
   "keywords": [
     "n8n-community-node-package",
@@ -28,7 +28,8 @@
     "prepublishOnly": "npm run build && npm run lint"
   },
   "files": [
-    "dist"
+    "dist",
+    "nodes/Pipefy/pipefy.svg"
   ],
   "n8n": {
     "n8nNodesApiVersion": 1,
