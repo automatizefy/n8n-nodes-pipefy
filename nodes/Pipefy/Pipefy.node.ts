@@ -70,6 +70,10 @@ export class Pipefy implements INodeType {
 						value: 'table',
 					},
 					{
+						name: 'Table Record',
+						value: 'tableRecord',
+					},
+					{
 						name: 'User',
 						value: 'user',
 					},
@@ -383,6 +387,184 @@ export class Pipefy implements INodeType {
 				default: '',
 				description: 'The title of the card',
 			},
+			{
+				displayName: 'Fields',
+				name: 'fields',
+				type: 'fixedCollection',
+				typeOptions: {
+					multipleValues: true,
+				},
+				displayOptions: {
+					show: {
+						resource: ['card'],
+						operation: ['create', 'update'],
+					},
+				},
+				default: {},
+				options: [
+					{
+						name: 'field',
+						displayName: 'Field',
+						values: [
+							{
+								displayName: 'Field ID',
+								name: 'field_id',
+								type: 'string',
+								default: '',
+								required: true,
+								description: 'The ID of the field',
+							},
+							{
+								displayName: 'Field Type',
+								name: 'type',
+								type: 'options',
+								options: [
+									{
+										name: 'Assignee',
+										value: 'assignee',
+									},
+									{
+										name: 'Attachment',
+										value: 'attachment',
+									},
+									{
+										name: 'Checklist',
+										value: 'checklist',
+									},
+									{
+										name: 'Cnpj',
+										value: 'cnpj',
+									},
+									{
+										name: 'Connection',
+										value: 'connection',
+									},
+									{
+										name: 'Currency',
+										value: 'currency',
+									},
+									{
+										name: 'Date',
+										value: 'date',
+									},
+									{
+										name: 'DateTime',
+										value: 'datetime',
+									},
+									{
+										name: 'Due Date',
+										value: 'due_date',
+									},
+									{
+										name: 'Email',
+										value: 'email',
+									},
+									{
+										name: 'ID',
+										value: 'id',
+									},
+									{
+										name: 'Label',
+										value: 'label',
+									},
+									{
+										name: 'Long Text',
+										value: 'long_text',
+									},
+									{
+										name: 'Number',
+										value: 'number',
+									},
+									{
+										name: 'Phone',
+										value: 'phone',
+									},
+									{
+										name: 'Radio',
+										value: 'radio',
+									},
+									{
+										name: 'Select',
+										value: 'select',
+									},
+									{
+										name: 'Short Text',
+										value: 'short_text',
+									},
+									{
+										name: 'Statement',
+										value: 'statement',
+									},
+									{
+										name: 'Time',
+										value: 'time',
+									},
+								],
+								default: 'short_text',
+								description: 'The type of the field',
+							},
+							{
+								displayName: 'Value',
+								name: 'value',
+								type: 'string',
+								default: '',
+								description: 'The value of the field',
+							},
+							{
+								displayName: 'Array Values',
+								name: 'array_value',
+								type: 'string',
+								default: '',
+								displayOptions: {
+									show: {
+										type: ['checklist', 'label'],
+									},
+								},
+								description: 'Comma-separated values for checklist or label fields',
+							},
+							{
+								displayName: 'Attachments',
+								name: 'attachments',
+								type: 'fixedCollection',
+								typeOptions: {
+									multipleValues: true,
+								},
+								displayOptions: {
+									show: {
+										type: ['attachment'],
+									},
+								},
+								default: {},
+								options: [
+									{
+										name: 'attachment',
+										displayName: 'Attachment',
+										values: [
+											{
+												displayName: 'URL',
+												name: 'url',
+												type: 'string',
+												default: '',
+												required: true,
+												description: 'The URL of the attachment',
+											},
+											{
+												displayName: 'Filename',
+												name: 'filename',
+												type: 'string',
+												default: '',
+												required: true,
+												description: 'The name of the file',
+											},
+										],
+									},
+								],
+							},
+						],
+					},
+				],
+				description: 'The fields to set on the card',
+			},
 			// Pipe Fields
 			{
 				displayName: 'Name',
@@ -693,6 +875,370 @@ export class Pipefy implements INodeType {
 				default: '',
 				description: 'The file to upload as an attachment',
 			},
+			// Table Fields
+			{
+				displayName: 'Operation',
+				name: 'operation',
+				type: 'options',
+				noDataExpression: true,
+				displayOptions: {
+					show: {
+						resource: ['table'],
+					},
+				},
+				options: [
+					{
+						name: 'Create',
+						value: 'create',
+						description: 'Create a new table',
+						action: 'Create a table',
+					},
+					{
+						name: 'Get',
+						value: 'get',
+						description: 'Get table details',
+						action: 'Get a table',
+					},
+					{
+						name: 'Update',
+						value: 'update',
+						description: 'Update a table',
+						action: 'Update a table',
+					},
+					{
+						name: 'Delete',
+						value: 'delete',
+						description: 'Delete a table',
+						action: 'Delete a table',
+					},
+				],
+				default: 'get',
+			},
+			{
+				displayName: 'Table ID',
+				name: 'tableId',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['table'],
+						operation: ['get', 'update', 'delete'],
+					},
+				},
+				default: '',
+				description: 'The ID of the table',
+			},
+			{
+				displayName: 'Organization ID',
+				name: 'organizationId',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['table'],
+						operation: ['create'],
+					},
+				},
+				default: '',
+				description: 'The ID of the organization where the table will be created',
+			},
+			{
+				displayName: 'Name',
+				name: 'name',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['table'],
+						operation: ['create', 'update'],
+					},
+				},
+				default: '',
+				description: 'The name of the table',
+			},
+			{
+				displayName: 'Description',
+				name: 'description',
+				type: 'string',
+				required: false,
+				displayOptions: {
+					show: {
+						resource: ['table'],
+						operation: ['create', 'update'],
+					},
+				},
+				default: '',
+				description: 'The description of the table',
+			},
+			{
+				displayName: 'Fields',
+				name: 'fields',
+				type: 'fixedCollection',
+				typeOptions: {
+					multipleValues: true,
+				},
+				displayOptions: {
+					show: {
+						resource: ['table'],
+						operation: ['create'],
+					},
+				},
+				default: {},
+				options: [
+					{
+						name: 'field',
+						displayName: 'Field',
+						values: [
+							{
+								displayName: 'Label',
+								name: 'label',
+								type: 'string',
+								default: '',
+								required: true,
+								description: 'The label of the field',
+							},
+							{
+								displayName: 'Type',
+								name: 'type',
+								type: 'options',
+								options: [
+									{
+										name: 'Assignee',
+										value: 'assignee',
+									},
+									{
+										name: 'Attachment',
+										value: 'attachment',
+									},
+									{
+										name: 'Checklist',
+										value: 'checklist',
+									},
+									{
+										name: 'Cnpj',
+										value: 'cnpj',
+									},
+									{
+										name: 'Connection',
+										value: 'connection',
+									},
+									{
+										name: 'Currency',
+										value: 'currency',
+									},
+									{
+										name: 'Date',
+										value: 'date',
+									},
+									{
+										name: 'DateTime',
+										value: 'datetime',
+									},
+									{
+										name: 'Due Date',
+										value: 'due_date',
+									},
+									{
+										name: 'Email',
+										value: 'email',
+									},
+									{
+										name: 'ID',
+										value: 'id',
+									},
+									{
+										name: 'Label',
+										value: 'label',
+									},
+									{
+										name: 'Long Text',
+										value: 'long_text',
+									},
+									{
+										name: 'Number',
+										value: 'number',
+									},
+									{
+										name: 'Phone',
+										value: 'phone',
+									},
+									{
+										name: 'Radio',
+										value: 'radio',
+									},
+									{
+										name: 'Select',
+										value: 'select',
+									},
+									{
+										name: 'Short Text',
+										value: 'short_text',
+									},
+									{
+										name: 'Statement',
+										value: 'statement',
+									},
+									{
+										name: 'Time',
+										value: 'time',
+									},
+								],
+								default: 'short_text',
+								description: 'The type of the field',
+							},
+							{
+								displayName: 'Required',
+								name: 'required',
+								type: 'boolean',
+								default: false,
+								description: 'Whether the field is required',
+							},
+							{
+								displayName: 'Help Text',
+								name: 'help',
+								type: 'string',
+								default: '',
+								description: 'Help text for the field',
+							},
+							{
+								displayName: 'Description',
+								name: 'description',
+								type: 'string',
+								default: '',
+								description: 'Description of the field',
+							},
+						],
+					},
+				],
+				description: 'The fields to create in the table',
+			},
+			// Table Record Fields
+			{
+				displayName: 'Operation',
+				name: 'operation',
+				type: 'options',
+				noDataExpression: true,
+				displayOptions: {
+					show: {
+						resource: ['tableRecord'],
+					},
+				},
+				options: [
+					{
+						name: 'Create',
+						value: 'create',
+						description: 'Create a new table record',
+						action: 'Create a table record',
+					},
+					{
+						name: 'Get',
+						value: 'get',
+						description: 'Get table record details',
+						action: 'Get a table record',
+					},
+					{
+						name: 'Update',
+						value: 'update',
+						description: 'Update a table record',
+						action: 'Update a table record',
+					},
+					{
+						name: 'Delete',
+						value: 'delete',
+						description: 'Delete a table record',
+						action: 'Delete a table record',
+					},
+				],
+				default: 'get',
+			},
+			{
+				displayName: 'Table ID',
+				name: 'tableId',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['tableRecord'],
+						operation: ['create'],
+					},
+				},
+				default: '',
+				description: 'The ID of the table',
+			},
+			{
+				displayName: 'Record ID',
+				name: 'recordId',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['tableRecord'],
+						operation: ['get', 'update', 'delete'],
+					},
+				},
+				default: '',
+				description: 'The ID of the record',
+			},
+			{
+				displayName: 'Title',
+				name: 'title',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['tableRecord'],
+						operation: ['create', 'update'],
+					},
+				},
+				default: '',
+				description: 'The title of the record',
+			},
+			{
+				displayName: 'Fields',
+				name: 'fields',
+				type: 'fixedCollection',
+				typeOptions: {
+					multipleValues: true,
+				},
+				displayOptions: {
+					show: {
+						resource: ['tableRecord'],
+						operation: ['create', 'update'],
+					},
+				},
+				default: {},
+				options: [
+					{
+						name: 'field',
+						displayName: 'Field',
+						values: [
+							{
+								displayName: 'Field ID',
+								name: 'field_id',
+								type: 'string',
+								default: '',
+								required: true,
+								description: 'The ID of the field',
+							},
+							{
+								displayName: 'Value',
+								name: 'value',
+								type: 'string',
+								default: '',
+								description: 'The value of the field',
+							},
+							{
+								displayName: 'Array Values',
+								name: 'array_value',
+								type: 'string',
+								default: '',
+								description: 'Comma-separated values for array fields',
+							},
+						],
+					},
+				],
+				description: 'The fields to set on the record',
+			},
 		],
 	};
 
@@ -910,6 +1456,36 @@ export class Pipefy implements INodeType {
 						const pipeId = this.getNodeParameter('pipeId', i) as string;
 						const phaseId = this.getNodeParameter('phaseId', i) as string;
 						const title = this.getNodeParameter('title', i) as string;
+						const fields = this.getNodeParameter('fields', i) as {
+							field: Array<{
+								field_id: string;
+								type: string;
+								value: string;
+								array_value: string;
+								attachments?: {
+									attachment: Array<{
+										url: string;
+										filename: string;
+									}>;
+								};
+							}>;
+						};
+
+						const fieldsAttributes = fields.field?.map((field) => {
+							const fieldData: any = {
+								field_id: field.field_id,
+							};
+
+							if (field.type === 'checklist' || field.type === 'label') {
+								fieldData.array_value = field.array_value.split(',').map(value => value.trim());
+							} else if (field.type === 'attachment' && field.attachments?.attachment) {
+								fieldData.attachments = field.attachments.attachment;
+							} else {
+								fieldData.value = field.value;
+							}
+
+							return fieldData;
+						});
 
 						const query = `
 							mutation {
@@ -917,12 +1493,22 @@ export class Pipefy implements INodeType {
 									pipe_id: ${pipeId},
 									phase_id: ${phaseId},
 									title: "${title}"
+									${fieldsAttributes ? `, fields_attributes: ${JSON.stringify(fieldsAttributes)}` : ''}
 								}) {
 									card {
 										id
 										title
 										current_phase {
 											name
+										}
+										fields {
+											name
+											value
+											array_value
+											field {
+												id
+												type
+											}
 										}
 										created_at
 										updated_at
@@ -965,18 +1551,58 @@ export class Pipefy implements INodeType {
 					else if (operation === 'update') {
 						const cardId = this.getNodeParameter('cardId', i) as string;
 						const title = this.getNodeParameter('title', i) as string;
+						const fields = this.getNodeParameter('fields', i) as {
+							field: Array<{
+								field_id: string;
+								type: string;
+								value: string;
+								array_value: string;
+								attachments?: {
+									attachment: Array<{
+										url: string;
+										filename: string;
+									}>;
+								};
+							}>;
+						};
+
+						const fieldsAttributes = fields.field?.map((field) => {
+							const fieldData: any = {
+								field_id: field.field_id,
+							};
+
+							if (field.type === 'checklist' || field.type === 'label') {
+								fieldData.array_value = field.array_value.split(',').map(value => value.trim());
+							} else if (field.type === 'attachment' && field.attachments?.attachment) {
+								fieldData.attachments = field.attachments.attachment;
+							} else {
+								fieldData.value = field.value;
+							}
+
+							return fieldData;
+						});
 
 						const query = `
 							mutation {
 								updateCard(input: {
 									id: ${cardId},
 									title: "${title}"
+									${fieldsAttributes ? `, fields_attributes: ${JSON.stringify(fieldsAttributes)}` : ''}
 								}) {
 									card {
 										id
 										title
 										current_phase {
 											name
+										}
+										fields {
+											name
+											value
+											array_value
+											field {
+												id
+												type
+											}
 										}
 										updated_at
 									}
@@ -1428,6 +2054,299 @@ export class Pipefy implements INodeType {
 						});
 
 						returnData.push({ json: response.data.deleteWebhook });
+					}
+				}
+				else if (resource === 'table') {
+					if (operation === 'create') {
+						const organizationId = this.getNodeParameter('organizationId', i) as string;
+						const name = this.getNodeParameter('name', i) as string;
+						const description = this.getNodeParameter('description', i) as string;
+						const fields = this.getNodeParameter('fields', i) as {
+							field: Array<{
+								label: string;
+								type: string;
+								required: boolean;
+								help: string;
+								description: string;
+							}>;
+						};
+
+						const query = `
+							mutation {
+								createTable(input: {
+									organization_id: ${organizationId},
+									name: "${name}",
+									description: "${description}",
+									fields: ${JSON.stringify(fields.field)}
+								}) {
+									table {
+										id
+										name
+										description
+										fields {
+											label
+											type
+											required
+											help
+											description
+										}
+									}
+								}
+							}
+						`;
+
+						const response = await this.helpers.request({
+							method: 'POST',
+							body: { query },
+						});
+
+						returnData.push({ json: response.data.createTable.table });
+					}
+					else if (operation === 'get') {
+						const tableId = this.getNodeParameter('tableId', i) as string;
+
+						const query = `
+							query {
+								table(id: ${tableId}) {
+									id
+									name
+									description
+									fields {
+										label
+										type
+										required
+										help
+										description
+									}
+								}
+							}
+						`;
+
+						const response = await this.helpers.request({
+							method: 'POST',
+							body: { query },
+						});
+
+						returnData.push({ json: response.data.table });
+					}
+					else if (operation === 'update') {
+						const tableId = this.getNodeParameter('tableId', i) as string;
+						const name = this.getNodeParameter('name', i) as string;
+						const description = this.getNodeParameter('description', i) as string;
+						const fields = this.getNodeParameter('fields', i) as {
+							field: Array<{
+								label: string;
+								type: string;
+								required: boolean;
+								help: string;
+								description: string;
+							}>;
+						};
+
+						const query = `
+							mutation {
+								updateTable(input: {
+									id: ${tableId},
+									name: "${name}",
+									description: "${description}",
+									fields: ${JSON.stringify(fields.field)}
+								}) {
+									table {
+										id
+										name
+										description
+										fields {
+											label
+											type
+											required
+											help
+											description
+										}
+									}
+								}
+							}
+						`;
+
+						const response = await this.helpers.request({
+							method: 'POST',
+							body: { query },
+						});
+
+						returnData.push({ json: response.data.updateTable.table });
+					}
+					else if (operation === 'delete') {
+						const tableId = this.getNodeParameter('tableId', i) as string;
+
+						const query = `
+							mutation {
+								deleteTable(input: {
+									id: ${tableId}
+								}) {
+									success
+								}
+							}
+						`;
+
+						const response = await this.helpers.request({
+							method: 'POST',
+							body: { query },
+						});
+
+						returnData.push({ json: response.data.deleteTable });
+					}
+				}
+				else if (resource === 'tableRecord') {
+					if (operation === 'create') {
+						const tableId = this.getNodeParameter('tableId', i) as string;
+						const title = this.getNodeParameter('title', i) as string;
+						const fields = this.getNodeParameter('fields', i) as {
+							field: Array<{
+								field_id: string;
+								value: string;
+								array_value: string;
+							}>;
+						};
+
+						const fieldsAttributes = fields.field?.map((field) => {
+							const fieldData: any = {
+								field_id: field.field_id,
+							};
+
+							if (field.array_value) {
+								fieldData.array_value = field.array_value.split(',').map(value => value.trim());
+							} else {
+								fieldData.value = field.value;
+							}
+
+							return fieldData;
+						});
+
+						const query = `
+							mutation {
+								createTableRecord(input: {
+									table_id: ${tableId},
+									title: "${title}",
+									fields_attributes: ${JSON.stringify(fieldsAttributes)}
+								}) {
+									table_record {
+										id
+										title
+										fields {
+											name
+											value
+											array_value
+										}
+										created_at
+									}
+								}
+							}
+						`;
+
+						const response = await this.helpers.request({
+							method: 'POST',
+							body: { query },
+						});
+
+						returnData.push({ json: response.data.createTableRecord.table_record });
+					}
+					else if (operation === 'get') {
+						const recordId = this.getNodeParameter('recordId', i) as string;
+
+						const query = `
+							query {
+								tableRecord(id: ${recordId}) {
+									id
+									title
+									fields {
+										name
+										value
+										array_value
+									}
+									created_at
+									updated_at
+								}
+							}
+						`;
+
+						const response = await this.helpers.request({
+							method: 'POST',
+							body: { query },
+						});
+
+						returnData.push({ json: response.data.tableRecord });
+					}
+					else if (operation === 'update') {
+						const recordId = this.getNodeParameter('recordId', i) as string;
+						const title = this.getNodeParameter('title', i) as string;
+						const fields = this.getNodeParameter('fields', i) as {
+							field: Array<{
+								field_id: string;
+								value: string;
+								array_value: string;
+							}>;
+						};
+
+						const fieldsAttributes = fields.field?.map((field) => {
+							const fieldData: any = {
+								field_id: field.field_id,
+							};
+
+							if (field.array_value) {
+								fieldData.array_value = field.array_value.split(',').map(value => value.trim());
+							} else {
+								fieldData.value = field.value;
+							}
+
+							return fieldData;
+						});
+
+						const query = `
+							mutation {
+								updateTableRecord(input: {
+									id: ${recordId},
+									title: "${title}",
+									fields_attributes: ${JSON.stringify(fieldsAttributes)}
+								}) {
+									table_record {
+										id
+										title
+										fields {
+											name
+											value
+											array_value
+										}
+										updated_at
+									}
+								}
+							}
+						`;
+
+						const response = await this.helpers.request({
+							method: 'POST',
+							body: { query },
+						});
+
+						returnData.push({ json: response.data.updateTableRecord.table_record });
+					}
+					else if (operation === 'delete') {
+						const recordId = this.getNodeParameter('recordId', i) as string;
+
+						const query = `
+							mutation {
+								deleteTableRecord(input: {
+									id: ${recordId}
+								}) {
+									success
+								}
+							}
+						`;
+
+						const response = await this.helpers.request({
+							method: 'POST',
+							body: { query },
+						});
+
+						returnData.push({ json: response.data.deleteTableRecord });
 					}
 				}
 			} catch (error) {
