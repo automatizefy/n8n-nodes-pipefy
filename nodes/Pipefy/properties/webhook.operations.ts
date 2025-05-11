@@ -4,25 +4,25 @@ import { INodeProperties } from 'n8n-workflow';
 const webhookOperationOptions = [
 	{
 		name: 'Listar Webhooks',
-		value: 'list',
+		value: 'listar',
 		description: 'Listar webhooks de uma organização',
 		action: 'Listar webhooks',
 	},
 	{
 		name: 'Criar Webhook',
-		value: 'create',
+		value: 'criar',
 		description: 'Criar um novo webhook',
 		action: 'Criar um webhook',
 	},
 	{
 		name: 'Atualizar Webhook',
-		value: 'update',
+		value: 'atualizar',
 		description: 'Atualizar um webhook existente',
 		action: 'Atualizar um webhook',
 	},
 	{
 		name: 'Excluir Webhook',
-		value: 'delete',
+		value: 'excluir',
 		description: 'Excluir um webhook existente',
 		action: 'Excluir um webhook',
 	},
@@ -40,9 +40,31 @@ const listWebhooksFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['webhook'],
-				operation: ['list'],
+				operation: ['listar'],
 			},
 		},
+	},
+	{
+		displayName: 'Opções',
+		name: 'options',
+		type: 'collection',
+		placeholder: 'Adicionar Opção',
+		displayOptions: {
+			show: {
+				resource: ['webhook'],
+				operation: ['listar'],
+			},
+		},
+		default: {},
+		options: [
+			{
+				displayName: 'Limite',
+				name: 'limit',
+				type: 'number',
+				default: 50,
+				description: 'Número máximo de webhooks a retornar',
+			},
+		],
 	},
 ];
 
@@ -58,7 +80,7 @@ const createWebhookFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['webhook'],
-				operation: ['create'],
+				operation: ['criar'],
 			},
 		},
 	},
@@ -72,7 +94,7 @@ const createWebhookFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['webhook'],
-				operation: ['create'],
+				operation: ['criar'],
 			},
 		},
 	},
@@ -112,7 +134,7 @@ const createWebhookFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['webhook'],
-				operation: ['create'],
+				operation: ['criar'],
 			},
 		},
 	},
@@ -124,7 +146,7 @@ const createWebhookFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['webhook'],
-				operation: ['create'],
+				operation: ['criar'],
 			},
 		},
 		default: {},
@@ -185,7 +207,7 @@ const updateWebhookFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['webhook'],
-				operation: ['update'],
+				operation: ['atualizar'],
 			},
 		},
 	},
@@ -197,7 +219,7 @@ const updateWebhookFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['webhook'],
-				operation: ['update'],
+				operation: ['atualizar'],
 			},
 		},
 		default: {},
@@ -265,7 +287,7 @@ const deleteWebhookFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['webhook'],
-				operation: ['delete'],
+				operation: ['excluir'],
 			},
 		},
 	},
@@ -285,7 +307,7 @@ export const webhookOperations: INodeProperties[] = [
 			},
 		},
 		options: webhookOperationOptions,
-		default: 'list',
+		default: 'listar',
 	},
 	// Adicionar todos os campos específicos para cada operação
 	...listWebhooksFields,

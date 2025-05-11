@@ -4,25 +4,25 @@ import { INodeProperties } from 'n8n-workflow';
 const pipeOperationOptions = [
 	{
 		name: 'Consultar Pipe',
-		value: 'get',
+		value: 'consultar',
 		description: 'Obter detalhes de um pipe específico',
 		action: 'Consultar um pipe',
 	},
 	{
 		name: 'Criar Pipe',
-		value: 'create',
+		value: 'criar',
 		description: 'Criar um novo pipe',
 		action: 'Criar um pipe',
 	},
 	{
 		name: 'Atualizar Pipe',
-		value: 'update',
+		value: 'atualizar',
 		description: 'Atualizar um pipe existente',
 		action: 'Atualizar um pipe',
 	},
 	{
 		name: 'Excluir Pipe',
-		value: 'delete',
+		value: 'excluir',
 		description: 'Excluir um pipe existente',
 		action: 'Excluir um pipe',
 	},
@@ -40,7 +40,7 @@ const getPipeFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['pipe'],
-				operation: ['get'],
+				operation: ['consultar'],
 			},
 		},
 	},
@@ -52,7 +52,7 @@ const getPipeFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['pipe'],
-				operation: ['get'],
+				operation: ['consultar'],
 			},
 		},
 		default: {},
@@ -94,7 +94,7 @@ const createPipeFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['pipe'],
-				operation: ['create'],
+				operation: ['criar'],
 			},
 		},
 	},
@@ -108,7 +108,7 @@ const createPipeFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['pipe'],
-				operation: ['create'],
+				operation: ['criar'],
 			},
 		},
 	},
@@ -120,7 +120,7 @@ const createPipeFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['pipe'],
-				operation: ['create'],
+				operation: ['criar'],
 			},
 		},
 		default: {},
@@ -155,7 +155,7 @@ const updatePipeFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['pipe'],
-				operation: ['update'],
+				operation: ['atualizar'],
 			},
 		},
 	},
@@ -167,7 +167,7 @@ const updatePipeFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['pipe'],
-				operation: ['update'],
+				operation: ['atualizar'],
 			},
 		},
 		default: {},
@@ -209,7 +209,7 @@ const deletePipeFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['pipe'],
-				operation: ['delete'],
+				operation: ['excluir'],
 			},
 		},
 	},
@@ -229,7 +229,7 @@ export const pipeOperations: INodeProperties[] = [
 			},
 		},
 		options: pipeOperationOptions,
-		default: 'get',
+		default: 'consultar',
 	},
 	// Adicionar todos os campos específicos para cada operação
 	...getPipeFields,

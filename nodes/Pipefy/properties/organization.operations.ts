@@ -4,13 +4,13 @@ import { INodeProperties } from 'n8n-workflow';
 const organizationOperationOptions = [
 	{
 		name: 'Consultar Organização',
-		value: 'get',
+		value: 'consultar',
 		description: 'Obter detalhes de uma organização específica',
 		action: 'Consultar uma organização',
 	},
 	{
 		name: 'Listar Organizações',
-		value: 'list',
+		value: 'listar',
 		description: 'Listar as organizações a que o usuário tem acesso',
 		action: 'Listar organizações',
 	},
@@ -28,7 +28,7 @@ const getOrganizationFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['organization'],
-				operation: ['get'],
+				operation: ['consultar'],
 			},
 		},
 	},
@@ -40,7 +40,7 @@ const getOrganizationFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['organization'],
-				operation: ['get'],
+				operation: ['consultar'],
 			},
 		},
 		default: {},
@@ -80,7 +80,7 @@ const listOrganizationsFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['organization'],
-				operation: ['list'],
+				operation: ['listar'],
 			},
 		},
 		default: {},
@@ -110,7 +110,7 @@ export const organizationOperations: INodeProperties[] = [
 			},
 		},
 		options: organizationOperationOptions,
-		default: 'list',
+		default: 'listar',
 	},
 	// Adicionar todos os campos específicos para cada operação
 	...getOrganizationFields,

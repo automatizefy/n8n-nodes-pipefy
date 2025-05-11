@@ -73,13 +73,13 @@ class PipefyAPI {
     // Operações de Pipe
     private async executePipeOperation(executeFunctions: IExecuteFunctions, operation: string) {
         switch (operation) {
-            case 'get':
+            case 'consultar':
                 return await this.getPipe(executeFunctions);
-            case 'create':
+            case 'criar':
                 return await this.createPipe(executeFunctions);
-            case 'update':
+            case 'atualizar':
                 return await this.updatePipe(executeFunctions);
-            case 'delete':
+            case 'excluir':
                 return await this.deletePipe(executeFunctions);
             default:
                 throw new Error(`Operação não suportada para pipe: ${operation}`);
@@ -89,15 +89,15 @@ class PipefyAPI {
     // Operações de Card
     private async executeCardOperation(executeFunctions: IExecuteFunctions, operation: string) {
         switch (operation) {
-            case 'get':
+            case 'consultar':
                 return await this.getCard(executeFunctions);
             case 'criar':
                 return await this.createCard(executeFunctions);
-            case 'update':
+            case 'atualizar':
                 return await this.updateCard(executeFunctions);
-            case 'move':
+            case 'mover':
                 return await this.moveCard(executeFunctions);
-            case 'delete':
+            case 'excluir':
                 return await this.deleteCard(executeFunctions);
             default:
                 throw new Error(`Operação não suportada para card: ${operation}`);
@@ -107,13 +107,13 @@ class PipefyAPI {
     // Operações de Webhook
     private async executeWebhookOperation(executeFunctions: IExecuteFunctions, operation: string) {
         switch (operation) {
-            case 'list':
+            case 'listar':
                 return await this.listWebhooks(executeFunctions);
-            case 'create':
+            case 'criar':
                 return await this.createWebhook(executeFunctions);
-            case 'update':
+            case 'atualizar':
                 return await this.updateWebhook(executeFunctions);
-            case 'delete':
+            case 'excluir':
                 return await this.deleteWebhook(executeFunctions);
             default:
                 throw new Error(`Operação não suportada para webhook: ${operation}`);
@@ -123,9 +123,9 @@ class PipefyAPI {
     // Operações de Organization
     private async executeOrganizationOperation(executeFunctions: IExecuteFunctions, operation: string) {
         switch (operation) {
-            case 'get':
+            case 'consultar':
                 return await this.getOrganization(executeFunctions);
-            case 'list':
+            case 'listar':
                 return await this.listOrganizations(executeFunctions);
             default:
                 throw new Error(`Operação não suportada para organization: ${operation}`);

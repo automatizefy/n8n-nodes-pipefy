@@ -4,7 +4,7 @@ import { INodeProperties } from 'n8n-workflow';
 const cardOperationOptions = [
 	{
 		name: 'Consultar Card',
-		value: 'get',
+		value: 'consultar',
 		description: 'Obter detalhes de um card específico',
 		action: 'Consultar um card',
 	},
@@ -16,19 +16,19 @@ const cardOperationOptions = [
 	},
 	{
 		name: 'Atualizar Card',
-		value: 'update',
+		value: 'atualizar',
 		description: 'Atualizar dados de um card existente',
 		action: 'Atualizar um card',
 	},
 	{
 		name: 'Mover Card',
-		value: 'move',
+		value: 'mover',
 		description: 'Mover um card para outra fase',
 		action: 'Mover um card',
 	},
 	{
 		name: 'Excluir Card',
-		value: 'delete',
+		value: 'excluir',
 		description: 'Excluir um card existente',
 		action: 'Excluir um card',
 	},
@@ -46,7 +46,7 @@ const getCardFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['card'],
-				operation: ['get'],
+				operation: ['consultar'],
 			},
 		},
 	},
@@ -58,7 +58,7 @@ const getCardFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['card'],
-				operation: ['get'],
+				operation: ['consultar'],
 			},
 		},
 		default: {},
@@ -212,7 +212,7 @@ const updateCardFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['card'],
-				operation: ['update'],
+				operation: ['atualizar'],
 			},
 		},
 	},
@@ -224,7 +224,7 @@ const updateCardFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['card'],
-				operation: ['update'],
+				operation: ['atualizar'],
 			},
 		},
 		default: {},
@@ -256,7 +256,7 @@ const updateCardFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['card'],
-				operation: ['update'],
+				operation: ['atualizar'],
 			},
 		},
 		default: {},
@@ -297,7 +297,7 @@ const moveCardFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['card'],
-				operation: ['move'],
+				operation: ['mover'],
 			},
 		},
 	},
@@ -311,7 +311,7 @@ const moveCardFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['card'],
-				operation: ['move'],
+				operation: ['mover'],
 			},
 		},
 	},
@@ -329,7 +329,7 @@ const deleteCardFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['card'],
-				operation: ['delete'],
+				operation: ['excluir'],
 			},
 		},
 	},
@@ -349,7 +349,7 @@ export const cardOperations: INodeProperties[] = [
 			},
 		},
 		options: cardOperationOptions,
-		default: 'get',
+		default: 'consultar',
 	},
 	// Adicionar todos os campos específicos para cada operação
 	...getCardFields,

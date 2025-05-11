@@ -36,26 +36,26 @@ type ResourceOperationFunctions = {
 // Configuração das funções disponíveis por recurso e operação
 export const resourceOperationFunctions: ResourceOperationFunctions = {
 	pipe: {
-		get: getPipe,
-		create: createPipe,
-		update: updatePipe,
-		delete: deletePipe,
+		consultar: getPipe,
+		criar: createPipe,
+		atualizar: updatePipe,
+		excluir: deletePipe,
 	},
 	card: {
-		get: getCard,
+		consultar: getCard,
 		criar: createCard,
-		update: updateCard,
-		move: moveCard,
-		delete: deleteCard,
+		atualizar: updateCard,
+		mover: moveCard,
+		excluir: deleteCard,
 	},
 	webhook: {
-		list: listWebhooks,
-		create: createWebhook,
-		update: updateWebhook,
-		delete: deleteWebhook,
+		listar: listWebhooks,
+		criar: createWebhook,
+		atualizar: updateWebhook,
+		excluir: deleteWebhook,
 	},
 	organization: {
-		get: getOrganization,
-		list: listOrganizations,
+		consultar: getOrganization,
+		listar: listOrganizations,
 	},
 }; 
