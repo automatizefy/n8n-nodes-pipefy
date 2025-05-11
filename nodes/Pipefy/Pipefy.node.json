@@ -1,0 +1,21 @@
+{
+    "node": "n8n-nodes-base.pipefy",
+    "nodeVersion": "1.0",
+    "codexVersion": "1.0",
+    "categories": [
+        "Communication",
+        "Development"
+    ],
+    "resources": {
+        "credentialDocumentation": [
+            {
+                "url": "https://developers.pipefy.com/reference/authentication"
+            }
+        ],
+        "primaryDocumentation": [
+            {
+                "url": "https://developers.pipefy.com/reference/graphql-api"
+            }
+        ]
+    }
+} 
