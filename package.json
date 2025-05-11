@@ -3,17 +3,21 @@
   "version": "0.1.0",
   "description": "Nó n8n para integração com a API do Pipefy",
   "keywords": [
-    "n8n-community-node-package"
+    "n8n-community-node-package",
+    "pipefy",
+    "n8n",
+    "workflow",
+    "automation"
   ],
   "license": "MIT",
-  "homepage": "",
+  "homepage": "https://github.com/automatizefy/n8n-nodes-pipefy",
   "author": {
-    "name": "Pipefy Nodes",
-    "email": "example@email.com"
+    "name": "Automatizefy",
+    "email": "contato@automatizefy.com.br"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/username/n8n-nodes-pipefy.git"
+    "url": "git+https://github.com/automatizefy/n8n-nodes-pipefy.git"
   },
   "engines": {
     "node": ">=18.10",
@@ -57,4 +61,4 @@
   "dependencies": {
     "axios": "^1.6.0"
   }
-} 
+}

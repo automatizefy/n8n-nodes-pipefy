@@ -15,6 +15,12 @@ const cardOperationOptions = [
 		action: 'Criar um card',
 	},
 	{
+		name: 'Criar Card',
+		value: 'criar',
+		description: 'Criar um novo card em um pipe',
+		action: 'Criar um card',
+	},
+	{
 		name: 'Atualizar Card',
 		value: 'update',
 		description: 'Atualizar dados de um card existente',
@@ -100,7 +106,7 @@ const createCardFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['card'],
-				operation: ['create'],
+				operation: ['create', 'criar'],
 			},
 		},
 	},
@@ -114,7 +120,7 @@ const createCardFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['card'],
-				operation: ['create'],
+				operation: ['create', 'criar'],
 			},
 		},
 	},
@@ -127,7 +133,7 @@ const createCardFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['card'],
-				operation: ['create'],
+				operation: ['create', 'criar'],
 			},
 		},
 	},
@@ -142,7 +148,7 @@ const createCardFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['card'],
-				operation: ['create'],
+				operation: ['create', 'criar'],
 			},
 		},
 		default: {},
@@ -177,7 +183,7 @@ const createCardFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['card'],
-				operation: ['create'],
+				operation: ['create', 'criar'],
 			},
 		},
 		default: {},

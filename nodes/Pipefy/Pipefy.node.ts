@@ -6,7 +6,7 @@ import {
 	NodeApiError,
 	NodeConnectionType,
 } from 'n8n-workflow';
-import { pipefy } from './PipefyAPI';
+import { pipefy } from './PipefyApi';
 import { pipefyNodeProperties } from './properties';
 
 export class Pipefy implements INodeType {

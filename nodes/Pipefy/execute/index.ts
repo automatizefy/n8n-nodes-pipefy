@@ -44,6 +44,7 @@ export const resourceOperationFunctions: ResourceOperationFunctions = {
 	card: {
 		get: getCard,
 		create: createCard,
+		criar: createCard,
 		update: updateCard,
 		move: moveCard,
 		delete: deleteCard,
