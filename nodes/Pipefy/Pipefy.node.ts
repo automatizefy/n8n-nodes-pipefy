@@ -4,8 +4,9 @@ import {
 	INodeType,
 	INodeTypeDescription,
 	NodeApiError,
+	NodeConnectionType,
 } from 'n8n-workflow';
-import { pipefy } from './PipefyApi';
+import { pipefy } from './PipefyAPI';
 import { pipefyNodeProperties } from './properties';
 
 export class Pipefy implements INodeType {
@@ -20,8 +21,8 @@ export class Pipefy implements INodeType {
 		defaults: {
 			name: 'Pipefy',
 		},
-		inputs: ['main'],
-		outputs: ['main'],
+		inputs: [{ type: NodeConnectionType.Main }],
+		outputs: [{ type: NodeConnectionType.Main }],
 		credentials: [
 			{
 				name: 'pipefy',
