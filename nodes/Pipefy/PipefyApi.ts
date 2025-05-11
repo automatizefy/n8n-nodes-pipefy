@@ -91,7 +91,6 @@ class PipefyAPI {
         switch (operation) {
             case 'get':
                 return await this.getCard(executeFunctions);
-            case 'create':
             case 'criar':
                 return await this.createCard(executeFunctions);
             case 'update':
